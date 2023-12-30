@@ -1,5 +1,5 @@
 import ElementItem from '../ElementItem/ElementItem';
-import { getContacts, getFiltersStatus } from '../../redux/selectors';
+import { selectContacts, selectFiltersStatus } from '../../redux/selectors';
 import { useSelector } from 'react-redux';
 
 const filterContact = (contacts, filterStatus) => {
@@ -9,8 +9,8 @@ const filterContact = (contacts, filterStatus) => {
 };
 
 const ElementsList = () => {
-  const contacts = useSelector(getContacts);
-  const filterStatus = useSelector(getFiltersStatus);
+  const contacts = useSelector(selectContacts);
+  const filterStatus = useSelector(selectFiltersStatus);
   const filter = filterContact(contacts, filterStatus);
 
   const list = filter.map(contact => (

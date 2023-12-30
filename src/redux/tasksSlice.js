@@ -1,36 +1,60 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { nanoid } from '@reduxjs/toolkit';
+import { fetchContacts, addContact, removeContact } from './operations';
 
-const tasksInitialState = [
-  //   { id: nanoid(), name: 'Rosie Simpson', number: '459-12-56' },
-  //   { id: nanoid(), name: 'Hermione Kline', number: '443-89-12' },
-  //   { id: nanoid(), name: 'Eden Clements', number: '645-17-79' },
-  //   { id: nanoid(), name: 'Annie Copeland', number: '227-91-26' },
-];
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
+
+const isPendingAction = action => {
+  return action.type.endsWith('/pending');
+};
+
+const isRejectAction = action => {
+  return action.type.endsWith('/rejected');
+};
 
 const tasksSlice = createSlice({
   name: 'contact',
-  initialState: tasksInitialState,
-  reducers: {
-    addContact: {
-      reducer(state, action) {
-        state.push(action.payload);
-      },
-      prepare(name, number) {
-        return {
-          payload: {
-            id: nanoid(),
-            name,
-            number,
-          },
-        };
-      },
-    },
-    removeContact(state, action) {
-      return state.filter(contact => contact.id !== action.payload);
-    },
+  initialState: {
+    items: [],
+    isLoading: false,
+    error: null,
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchContacts.fulfilled, (state, actions) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items = actions.payload;
+      })
+
+      .addCase(addContact.fulfilled, (state, actions) => {
+        state.isLoading = false;
+        state.error = null;
+        state.items.push(actions.payload);
+      })
+
+      .addCase(removeContact.fulfilled, (state, actions) => {
+        state.isLoading = false;
+        state.error = null;
+        const index = state.items.findIndex(
+          item => item.id === actions.payload.id
+        );
+
+        state.items.splice(index, 1);
+      })
+
+      .addMatcher(isPendingAction, handlePending)
+      .addMatcher(isRejectAction, handleRejected)
+      .addDefaultCase(state => {
+        state.error = 'someone use old function, fix it!';
+      });
   },
 });
 
 export const tasksReducer = tasksSlice.reducer;
-export const { addContact, removeContact } = tasksSlice.actions;

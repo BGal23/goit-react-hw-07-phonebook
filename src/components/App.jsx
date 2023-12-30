@@ -2,27 +2,18 @@ import ContactForm from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ElementsList from './ElementsList/ElementsList';
 import { useSelector, useDispatch } from 'react-redux';
-import { addContact } from '../redux/tasksSlice';
-import { getContacts } from '../redux/selectors';
+import { fetchContacts } from '../redux/operations';
+import { selectError, selectIsLoading } from '../redux/selectors';
 import { useEffect } from 'react';
 
 const App = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
 
   useEffect(() => {
-    const getToStorage = JSON.parse(localStorage.getItem('contact'));
-    if (getToStorage !== null) {
-      for (let i = 0; i < getToStorage.length; i++) {
-        dispatch(addContact(getToStorage[i].name, getToStorage[i].number));
-      }
-    }
+    dispatch(fetchContacts());
   }, [dispatch]);
-
-  useEffect(() => {
-    const addToStorage = JSON.stringify([...contacts]);
-    localStorage.setItem('contact', addToStorage);
-  }, [contacts]);
 
   return (
     <>
@@ -30,6 +21,7 @@ const App = () => {
       <ContactForm />
       <h2>Contact</h2>
       <Filter />
+      {isLoading && error && <b>Request in progress...</b>}
       <ElementsList />
     </>
   );

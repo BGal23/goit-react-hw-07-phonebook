@@ -1,5 +1,5 @@
 import { useDispatch } from 'react-redux';
-import { removeContact } from '../../redux/tasksSlice';
+import { removeContact } from '../../redux/operations';
 
 const ElementItem = ({ contact }) => {
   const dispatch = useDispatch();
