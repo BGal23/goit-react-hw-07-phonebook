@@ -1,10 +1,13 @@
 import { addContact } from '../../redux/operations';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectContacts } from '../../redux/selectors';
 
-const ContactForm = () => {
+export const ContactForm = () => {
   const dispatch = useDispatch();
   const contacts = useSelector(selectContacts);
+
+  // próbowałem logie newContact przenieś do pliku selektors ale miałem problem
+  // z eventem który przekazuje i wszystko zaczeło mi sie sypać
 
   const newContact = event => {
     event.preventDefault();
@@ -16,7 +19,7 @@ const ContactForm = () => {
     } else if (contacts.some(check => check.number === number)) {
       alert(`This number ${number} is already in contacts.`);
     } else {
-      dispatch(addContact(name, number));
+      dispatch(addContact({ name, number }));
     }
     event.currentTarget.reset();
 
@@ -50,5 +53,3 @@ const ContactForm = () => {
     </>
   );
 };
-
-export default ContactForm;

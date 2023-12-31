@@ -1,4 +1,4 @@
-import ContactForm from './ContactForm/ContactForm';
+import { ContactForm } from './ContactForm/ContactForm';
 import Filter from './Filter/Filter';
 import ElementsList from './ElementsList/ElementsList';
 import { useSelector, useDispatch } from 'react-redux';
@@ -21,7 +21,7 @@ const App = () => {
       <ContactForm />
       <h2>Contact</h2>
       <Filter />
-      {isLoading && error && <b>Request in progress...</b>}
+      {isLoading && error && <b>Loading...</b>}
       <ElementsList />
     </>
   );
